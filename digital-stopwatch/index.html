@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DELD Digital Stopwatch</title>
+<style>
+:root{--bg:#070b14;--panel:#0d1422;--card:#111b2c;--line:#22304a;--text:#eef4ff;--muted:#9aabc4;--accent:#65e6ff;--good:#6df0a6}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% 0,#12203b 0,#070b14 45%);color:var(--text);font:15px/1.6 Inter,system-ui,Segoe UI,sans-serif}
+a{color:inherit;text-decoration:none}.wrap{max-width:1100px;margin:auto;padding:0 22px}
+nav{position:sticky;top:0;z-index:5;background:#070b14dd;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;letter-spacing:.04em}.brand span{color:var(--accent)}
+.navlinks{display:flex;gap:20px;color:var(--muted)}.navlinks a:hover{color:var(--text)}
+.hero{padding:88px 0 60px;text-align:center}.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+h1{font-size:clamp(42px,7vw,78px);line-height:1.02;margin:14px 0}.hero p{max-width:680px;margin:0 auto;color:var(--muted);font-size:18px}
+.btns{display:flex;justify-content:center;gap:12px;margin-top:28px;flex-wrap:wrap}.btn{padding:12px 20px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-weight:700}.btn.primary{background:var(--accent);color:#061019;border-color:var(--accent)}
+section{padding:55px 0}.section-title{text-align:center;margin-bottom:28px}.section-title h2{font-size:30px;margin:0 0 6px}.section-title p{color:var(--muted);margin:0}
+.sim{background:linear-gradient(145deg,#0e1829,#0a101b);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 20px 60px #0005}
+.display{font:800 clamp(55px,11vw,100px)/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-align:center;padding:30px 10px;color:#dffbff;text-shadow:0 0 25px #65e6ff55}
+.status{display:flex;justify-content:center;align-items:center;gap:8px;color:var(--muted)}.dot{width:10px;height:10px;border-radius:50%;background:#667085}.dot.on{background:var(--good);box-shadow:0 0 14px #6df0a6}
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.controls button{min-height:48px}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.info{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}.info b{display:block;font-size:22px}.info small{color:var(--muted)}
+.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:center}.block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center}.arrow{text-align:center;color:var(--accent);font-size:24px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}.card h3{margin-top:0}.card p{color:var(--muted)}
+.team{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.member{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}.member strong{display:block}.member span{color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);text-align:center}
+@media(max-width:800px){.navlinks{display:none}.info-grid,.team{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.arch{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+@media(max-width:480px){.info-grid,.team{grid-template-columns:1fr}.hero{padding-top:60px}.controls{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">DELD <span>STOPWATCH</span></div><div class="navlinks"><a href="#sim">Simulation</a><a href="#architecture">Architecture</a><a href="#team">Team</a></div></div></nav>
+
+<header class="hero wrap">
+<div class="eyebrow">Digital Electronics & Logic Design</div>
+<h1>Digital Stopwatch</h1>
+<p>Design and implementation of a sequential-circuit stopwatch with Start, Stop and Reset controls, a 1 Hz timing signal and MM:SS digital display.</p>
+<div class="btns"><a class="btn primary" href="#sim">Run Simulation</a><a class="btn" href="#architecture">View Architecture</a></div>
+</header>
+
+<section id="sim"><div class="wrap">
+<div class="section-title"><h2>Live Simulation</h2><p>One clock pulse represents one second.</p></div>
+<div class="sim">
+<div class="status"><span id="dot" class="dot"></span><span id="state">STOPPED</span></div>
+<div id="display" class="display">00:00</div>
+<div class="controls">
+<button class="btn primary" id="start">START</button>
+<button class="btn" id="stop">STOP</button>
+<button class="btn" id="reset">RESET</button>
+</div>
+<div class="info-grid">
+<div class="info"><b id="run">0</b><small>RUN flip-flop</small></div>
+<div class="info"><b id="clk">0</b><small>1 Hz clock</small></div>
+<div class="info"><b id="en">0</b><small>CLK_EN = CLK · RUN</small></div>
+<div class="info"><b id="count">00:00</b><small>Counter output</small></div>
+</div>
+</div></div></section>
+
+<section id="architecture"><div class="wrap">
+<div class="section-title"><h2>Sequential Circuit Architecture</h2><p>Clock → control → counters → display.</p></div>
+<div class="arch">
+<div class="block"><b>Clock</b><br><small>1 Hz</small></div><div class="arrow">→</div>
+<div class="block"><b>Control</b><br><small>RUN latch</small></div><div class="arrow">→</div>
+<div class="block"><b>Counters</b><br><small>÷10 → ÷6 → ÷10 → ÷6</small></div>
+</div>
+<div class="arch" style="margin-top:12px">
+<div class="block"><b>Start / Stop</b><br><small>State control</small></div><div class="arrow">→</div>
+<div class="block"><b>Reset</b><br><small>Clear all stages</small></div><div class="arrow">→</div>
+<div class="block"><b>7-Segment</b><br><small>MM : SS</small></div>
+</div>
+</div></section>
+
+<section><div class="wrap">
+<div class="section-title"><h2>How It Works</h2></div>
+<div class="cards">
+<div class="card"><h3>01 — Start</h3><p>START sets the RUN state to 1. The 1 Hz clock is allowed to reach the counter.</p></div>
+<div class="card"><h3>02 — Count</h3><p>Every enabled clock pulse increments seconds. Carries move through the ÷10 and ÷6 stages.</p></div>
+<div class="card"><h3>03 — Stop / Reset</h3><p>STOP holds the current count. RESET clears the counter and returns RUN to 0.</p></div>
+</div></div></section>
+
+<section id="team"><div class="wrap">
+<div class="section-title"><h2>Project Team</h2><p>Group No. 31</p></div>
+<div class="team">
+<div class="member"><strong>Sujit Karad</strong><span>116</span></div>
+<div class="member"><strong>Lavanya Varade</strong><span>117</span></div>
+<div class="member"><strong>Samruddhi Gaikwad</strong><span>118</span></div>
+<div class="member"><strong>Atharva Deshpande</strong><span>119</span></div>
+<div class="member"><strong>Pratiksha Mali</strong><span>159</span></div>
+</div></div></section>
+
+<footer><div class="wrap">Digital Electronics & Logic Design (DELD) • Digital Stopwatch Using Sequential Circuits</div></footer>
+
+<script>
+(() => {
+let total=0,running=false,timer=null;
+const $=id=>document.getElementById(id);
+function render(){
+ const sec=total%60,min=Math.floor(total/60)%60;
+ const t=String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+ $('display').textContent=t;$('count').textContent=t;$('run').textContent=running?1:0;$('en').textContent=running?1:0;
+ $('state').textContent=running?'RUNNING':'STOPPED';$('dot').classList.toggle('on',running);
+}
+function tick(){if(running){total=(total+1)%3600;render()}}
+$('start').onclick=()=>{if(!running){running=true;render();if(!timer)timer=setInterval(tick,1000)}};
+$('stop').onclick=()=>{running=false;render()};
+$('reset').onclick=()=>{running=false;total=0;render()};
+render();
+})();
+</script>
+</body></html>
